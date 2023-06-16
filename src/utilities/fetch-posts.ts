@@ -4,7 +4,7 @@ export async function fetchPosts(
     after?: string
 ) {
     const response = await fetch(
-        `https://www.reddit.com/${query}/top.json?limit=5&t=${timelyQuery}&after=${after}`,
+        `https://api.reddit.com/${query}/top?limit=5&t=${timelyQuery}&after=${after}`,
         { method: "GET", redirect: "follow" }
     );
 
