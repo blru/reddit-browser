@@ -1,6 +1,7 @@
 # My first VUEJS project - A Reddit Browser
 
 This is a Reddit browser I made as a first project to learn vue. All in all this took around 8 hours over 1 day to build.
+The live version is available at [https://blru.github.io/reddit-browser](https://blru.github.io/reddit-browser).
 
 ![demo](https://cdn.discordapp.com/attachments/1119374088574611588/1119376110120091669/image.png)
 
