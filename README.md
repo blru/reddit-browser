@@ -2,7 +2,9 @@
 
 This is a Reddit browser I made as a first project to learn vue. All in all this took around 8 hours over 1 day to build.
 
-![demo](https://cdn.discordapp.com/attachments/1119374088574611588/1119374115325882601/reddit-browser-demo.gif)
+![demo](https://cdn.discordapp.com/attachments/1119374088574611588/1119376110120091669/image.png)
+
+[View demo video](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 ## Features
 
