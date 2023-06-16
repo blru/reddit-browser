@@ -1,6 +1,6 @@
 # My first VUEJS project - A Reddit Browser
 
-This is a reddit browser I made to help me learn vue. All in all this took around 8 hours over 1 day to build.
+This is a Reddit browser I made as a first project to learn vue. All in all this took around 8 hours over 1 day to build.
 
 ![demo](https://cdn.discordapp.com/attachments/1119374088574611588/1119374115325882601/reddit-browser-demo.gif)
 
