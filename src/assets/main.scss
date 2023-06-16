@@ -72,6 +72,10 @@ body {
             margin: 0 4rem 0;
         }
     }
+
+    a {
+        word-break: break-all;
+    }
 }
 
 h1,
@@ -108,7 +112,6 @@ p {
 
 a {
     color: var(--accent);
-    word-break: break-all;
 }
 
 small,
