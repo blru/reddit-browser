@@ -64,6 +64,7 @@ const numberOfComments = computed(() => props.data?.num_comments);
     .mini-info-container {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 0.5rem;
 
         .subreddit-name {
