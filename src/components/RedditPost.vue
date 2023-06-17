@@ -105,6 +105,7 @@ const numberOfComments = computed(() => props.data?.num_comments);
         width: auto;
         max-width: 100%;
         max-height: 40rem;
+        border-radius: 0.5rem;
     }
 }
 
