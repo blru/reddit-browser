@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref } from "@vue/reactivity";
 import { relativeTime, decodeHTMLEntities } from "@/utilities/index";
 import VideoPlayer from "@/components/VideoPlayer.vue";
 import ImageGallery from "./ImageGallery.vue";
@@ -21,7 +21,7 @@ const isVideo = computed(() => props.data?.is_video);
 const isGif = computed(() => props.data?.preview?.reddit_video_preview?.is_gif);
 const isGallery = computed(() => props.data?.is_gallery);
 const url = computed(() => "http:\/\/reddit.com" + props.data?.permalink);
-const image = computed<ImageData>(() => {
+const sourceImage = computed<ImageData>(() => {
     const imageData = props.data?.preview?.images[0]?.source;
 
     return {
@@ -29,6 +29,18 @@ const image = computed<ImageData>(() => {
         height: imageData?.height,
         url: decodeHTMLEntities(imageData?.url),
     };
+});
+const sourceSetImages = computed<string>(() => {
+    return (props.data?.preview?.images[0]?.resolutions as Array<any>)
+        ?.map((imageData: any) => {
+            return {
+                width: imageData?.width,
+                height: imageData?.height,
+                url: decodeHTMLEntities(imageData?.url),
+            };
+        })
+        .map(({ width, url }) => `${url} ${width}w`)
+        .join(",");
 });
 const video = computed<VideoData>(() => {
     const videoData = isVideo.value
@@ -89,14 +101,16 @@ const relativeAuthorUrl = computed(() => `?q=user/${authorName.value}`);
         <VideoPlayer v-if="isVideo || isGif" :data="video" />
         <ImageGallery v-else-if="isGallery" :galleryImages="galleryImages" />
         <a
-            v-else-if="image?.url != undefined"
-            :href="image?.url"
+            v-else-if="sourceImage?.url != undefined"
+            :href="sourceImage?.url"
             target="_blank"
         >
             <img
-                :src="image?.url"
-                :width="image?.width"
-                :height="image?.height"
+                :src="sourceImage?.url"
+                :width="sourceImage?.width"
+                :height="sourceImage?.height"
+                :srcset="sourceSetImages"
+                sizes="min(95vw, 50rem)"
                 class="image"
                 alt="Post image"
             />
@@ -169,7 +183,7 @@ const relativeAuthorUrl = computed(() => `?q=user/${authorName.value}`);
     .image {
         width: auto;
         height: auto;
-        max-height: min(90vh, 40rem);
+        max-height: 90vh;
         max-width: 100%;
         border-radius: 0.5rem;
     }

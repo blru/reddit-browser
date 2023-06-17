@@ -81,7 +81,7 @@ function cyclePrevious() {
         img {
             width: auto;
             height: auto;
-            max-height: min(90vh, 40rem);
+            max-height: 90vh;
             max-width: 100%;
             border-radius: 0.5rem;
         }

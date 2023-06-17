@@ -11,7 +11,11 @@ const isHlsSupported = Hls.isSupported();
 
 async function onIntersectionChange(isIntersecting: boolean) {
     if (isIntersecting && isHlsSupported && !video?.value?.src && video.value) {
-        const hls = new Hls();
+        const hls = new Hls({
+            backBufferLength: 10,
+            maxBufferSize: 1,
+            maxBufferLength: 10,
+        });
         hls.loadSource(props.data?.hlsUrl);
         hls.attachMedia(video.value);
     }
@@ -53,7 +57,7 @@ const { stop } = useIntersectionObserver(
 .video {
     width: auto;
     height: auto;
-    max-height: min(90vh, 40rem);
+    max-height: 90vh;
     max-width: 100%;
     border-radius: 0.5rem;
 }

@@ -9,6 +9,7 @@ import {
     faChevronLeft,
     faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import Hls from "hls.js";
 
 library.add(faComments);
 library.add(faHeart);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { debounce, fetchPosts } from "./utilities";
 import RedditPost from "@/components/RedditPost.vue";
 import SearchBar from "@/components/SearchBar.vue";
