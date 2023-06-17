@@ -85,7 +85,11 @@ const relativeAuthorUrl = computed(() => `?q=user/${authorName.value}`);
         <p v-if="isText" class="content md" v-html="content"></p>
         <VideoPlayer v-if="isVideo || isGif" :data="video" />
         <ImageGallery v-else-if="isGallery" :galleryImages="galleryImages" />
-        <a v-else-if="image != undefined" :href="image?.url" target="_blank">
+        <a
+            v-else-if="image?.url != undefined"
+            :href="image?.url"
+            target="_blank"
+        >
             <img
                 :src="image?.url"
                 :width="image?.width"
