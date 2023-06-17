@@ -25,7 +25,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <video class="video" controls ref="video">
+    <video class="video" controls ref="video" playsinline>
         <source v-if="!isHlsSupported" :src="fallbackUrl" type="video/mp4" />
         <b>Your browser does not support videos.</b>
     </video>
