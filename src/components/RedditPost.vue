@@ -40,6 +40,9 @@ const video = computed<VideoData>(() => {
         fallbackUrl: videoData?.fallback_url,
         width: videoData?.width,
         height: videoData?.height,
+        posterUrl: decodeHTMLEntities(
+            props?.data?.preview?.images[0]?.source?.url
+        ),
     };
 });
 const galleryImages = computed<GalleryImageData[]>(() => {

@@ -9,20 +9,24 @@ const props = defineProps<{ data: VideoData }>();
 const video = ref<HTMLVideoElement>();
 const isHlsSupported = Hls.isSupported();
 
+async function onIntersectionChange(isIntersecting: boolean) {
+    if (isIntersecting && isHlsSupported && !video?.value?.src && video.value) {
+        const hls = new Hls();
+        hls.loadSource(props.data?.hlsUrl);
+        hls.attachMedia(video.value);
+    }
+
+    try {
+        if (isIntersecting) await video.value?.play();
+        else await video.value?.pause();
+    } catch (err) {}
+}
+
 const { stop } = useIntersectionObserver(
     video,
-    ([{ isIntersecting }]) =>
-        isIntersecting ? video.value?.play() : video.value?.pause(),
+    ([{ isIntersecting }]) => onIntersectionChange(isIntersecting),
     { threshold: 0.9 }
 );
-
-onMounted(() => {
-    if (!video.value) return;
-
-    let hls = new Hls();
-    hls.loadSource(props.data.hlsUrl);
-    hls.attachMedia(video.value);
-});
 </script>
 
 <template>
@@ -33,6 +37,8 @@ onMounted(() => {
         controls
         ref="video"
         playsinline
+        preload="none"
+        :poster="props.data?.posterUrl"
     >
         <source
             v-if="!isHlsSupported"
