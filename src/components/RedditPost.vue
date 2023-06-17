@@ -65,15 +65,19 @@ const subredditName = computed(() => props.data?.subreddit);
 const authorName = computed(() => props.data?.author);
 const score = computed(() => props.data?.score);
 const numberOfComments = computed(() => props.data?.num_comments);
+const relativeSubredditUrl = computed(() => `?q=r/${subredditName.value}`);
+const relativeAuthorUrl = computed(() => `?q=user/${authorName.value}`);
 </script>
 
 <template>
     <div class="post">
         <div class="mini-info-container">
-            <span class="subreddit-name text-small">r/{{ subredditName }}</span>
-            <span class="author-name text-small">
+            <a class="subreddit-name text-small" :href="relativeSubredditUrl"
+                >r/{{ subredditName }}</a
+            >
+            <a class="author-name text-small" :href="relativeAuthorUrl">
                 Posted by u/{{ authorName }} {{ formattedDate }}
-            </span>
+            </a>
         </div>
         <h3 class="title">
             <a :href="url" target="_blank">{{ title }}</a>
@@ -119,10 +123,13 @@ const numberOfComments = computed(() => props.data?.num_comments);
         gap: 0.5rem;
 
         .subreddit-name {
+            color: var(--text-primary);
+            text-decoration: none;
             font-weight: 700;
         }
 
         .author-name {
+            text-decoration: none;
             color: var(--text-tertiary);
         }
     }

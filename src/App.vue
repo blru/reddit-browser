@@ -4,9 +4,11 @@ import { debounce, fetchPosts } from "./utilities";
 import RedditPost from "@/components/RedditPost.vue";
 import SearchBar from "@/components/SearchBar.vue";
 import TimelySelector from "./components/TimelySelector.vue";
-import { useIntersectionObserver } from "@vueuse/core";
+import { useIntersectionObserver, useUrlSearchParams } from "@vueuse/core";
 
-const query = ref("");
+const params = useUrlSearchParams("history");
+
+const query = ref(params.q?.toString() ?? "");
 const timelyQuery = ref("day");
 const searchResults = ref<any[]>([]);
 const postRefs = ref([]);
