@@ -11,7 +11,7 @@ const isHlsSupported = Hls.isSupported();
 const { stop } = useIntersectionObserver(
     video,
     ([{ isIntersecting }]) =>
-        (isIntersecting && video.value?.play()) || video.value?.pause(),
+        isIntersecting ? video.value?.play() : video.value?.pause(),
     { threshold: 0.9 }
 );
 
