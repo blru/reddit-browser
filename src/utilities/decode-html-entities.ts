@@ -1,5 +1,5 @@
 // https://stackoverflow.com/a/17076120
-export function decodeHTMLEntities(text: string) {
+export function decodeHTMLEntities(text?: string) {
     var entities = [
         ["amp", "&"],
         ["apos", "'"],
@@ -14,7 +14,7 @@ export function decodeHTMLEntities(text: string) {
     ];
 
     for (var i = 0, max = entities.length; i < max; ++i)
-        text = text.replace(
+        text = text?.replace(
             new RegExp("&" + entities[i][0] + ";", "g"),
             entities[i][1]
         );

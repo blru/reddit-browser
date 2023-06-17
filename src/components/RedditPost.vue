@@ -2,6 +2,12 @@
 import { computed, ref } from "vue";
 import { relativeTime, decodeHTMLEntities } from "@/utilities/index";
 import VideoPlayer from "@/components/VideoPlayer.vue";
+import ImageGallery from "./ImageGallery.vue";
+import {
+    type ImageData,
+    type GalleryImageData,
+    type VideoData,
+} from "@/interfaces";
 
 const props = defineProps<{ data: any }>();
 
@@ -9,14 +15,50 @@ const props = defineProps<{ data: any }>();
 const formattedDate = computed(() =>
     relativeTime(Math.abs(props.data?.created_utc - Date.now() / 1000))
 );
+const isTextOnly = computed(() => props.data?.is_self);
 const isText = computed(() => props.data?.selftext?.length !== 0);
 const isVideo = computed(() => props.data?.is_video);
+const isGif = computed(() => props.data?.preview?.reddit_video_preview?.is_gif);
+const isGallery = computed(() => props.data?.is_gallery);
 const url = computed(() => "http:\/\/reddit.com" + props.data?.permalink);
-const imageUrl = ref(props.data?.url);
-const videoUrl = computed(() => props.data?.media?.reddit_video?.hls_url);
-const videoFallbackUrl = computed(
-    () => props.data?.media?.reddit_video?.fallback_url
-);
+const image = computed<ImageData>(() => {
+    const imageData = props.data?.preview?.images[0]?.source;
+
+    return {
+        width: imageData?.width,
+        height: imageData?.height,
+        url: decodeHTMLEntities(imageData?.url),
+    };
+});
+const video = computed<VideoData>(() => {
+    const videoData = isVideo.value
+        ? props.data?.media?.reddit_video
+        : props.data?.preview?.reddit_video_preview;
+
+    return {
+        hlsUrl: videoData?.hls_url,
+        fallbackUrl: videoData?.fallback_url,
+        width: videoData?.width,
+        height: videoData?.height,
+    };
+});
+const galleryImages = computed<GalleryImageData[]>(() => {
+    if (!isGallery) return [];
+
+    return (
+        props.data?.gallery_data?.items?.map((image: any) => {
+            const imageData = props.data?.media_metadata[image?.media_id]?.s;
+
+            return {
+                caption: image?.caption,
+                url: decodeHTMLEntities(imageData?.u),
+                height: imageData?.y,
+                width: imageData?.x,
+                id: image?.media_id,
+            };
+        }) ?? []
+    );
+});
 const title = computed(() => decodeHTMLEntities(props.data?.title));
 const content = computed(() => decodeHTMLEntities(props.data?.selftext_html));
 const subredditName = computed(() => props.data?.subreddit);
@@ -37,15 +79,13 @@ const numberOfComments = computed(() => props.data?.num_comments);
             <a :href="url" target="_blank">{{ title }}</a>
         </h3>
         <p v-if="isText" class="content md" v-html="content"></p>
-        <VideoPlayer
-            v-else-if="isVideo"
-            :url="videoUrl"
-            :fallbackUrl="videoFallbackUrl"
-        />
-        <a v-else :href="imageUrl" target="_blank">
+        <VideoPlayer v-if="isVideo || isGif" :data="video" />
+        <ImageGallery v-else-if="isGallery" :galleryImages="galleryImages" />
+        <a v-else-if="image != undefined" :href="image?.url" target="_blank">
             <img
-                :src="imageUrl"
-                @error.once="imageUrl = data?.thumbnail"
+                :src="image?.url"
+                :width="image?.width"
+                :height="image?.height"
                 class="image"
                 alt="Post image"
             />
@@ -114,8 +154,9 @@ const numberOfComments = computed(() => props.data?.num_comments);
 
     .image {
         width: auto;
+        height: auto;
+        max-height: min(90vh, 40rem);
         max-width: 100%;
-        max-height: 40rem;
         border-radius: 0.5rem;
     }
 }

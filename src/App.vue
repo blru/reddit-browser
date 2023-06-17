@@ -15,7 +15,7 @@ const lastPost = computed(() => postRefs.value[postRefs.value.length - 1]);
 const { stop } = useIntersectionObserver(
     lastPost,
     ([{ isIntersecting }]) => isIntersecting && getMorePosts(),
-    { threshold: 0.5 }
+    { threshold: 0 }
 );
 
 async function getMorePosts() {

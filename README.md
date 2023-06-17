@@ -17,7 +17,7 @@ The live version is available at [https://blru.github.io/reddit-browser](https:/
 
 Possible improvements:
 
--   [ ] Better media support (images, videos, etc)
+-   [x] Better media support (images, videos, galleries, etc)
 -   [x] Infinite Scrolling
 -   [ ] Full-search functionality
 -   [ ] Viewing comments & awards
