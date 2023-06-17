@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { relativeTime, decodeHTMLEntities } from "@/utilities/index";
+import VideoPlayer from "@/components/VideoPlayer.vue";
 
 const props = defineProps<{ data: any }>();
 
@@ -9,8 +10,13 @@ const formattedDate = computed(() =>
     relativeTime(Math.abs(props.data?.created_utc - Date.now() / 1000))
 );
 const isText = computed(() => props.data?.selftext?.length !== 0);
+const isVideo = computed(() => props.data?.is_video);
 const url = computed(() => "http:\/\/reddit.com" + props.data?.permalink);
 const imageUrl = ref(props.data?.url);
+const videoUrl = computed(() => props.data?.media?.reddit_video?.hls_url);
+const videoFallbackUrl = computed(
+    () => props.data?.media?.reddit_video?.fallback_url
+);
 const title = computed(() => decodeHTMLEntities(props.data?.title));
 const content = computed(() => decodeHTMLEntities(props.data?.selftext_html));
 const subredditName = computed(() => props.data?.subreddit);
@@ -31,6 +37,11 @@ const numberOfComments = computed(() => props.data?.num_comments);
             <a :href="url" target="_blank">{{ title }}</a>
         </h3>
         <p v-if="isText" class="content md" v-html="content"></p>
+        <VideoPlayer
+            v-else-if="isVideo"
+            :url="videoUrl"
+            :fallbackUrl="videoFallbackUrl"
+        />
         <a v-else :href="imageUrl" target="_blank">
             <img
                 :src="imageUrl"

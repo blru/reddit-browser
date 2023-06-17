@@ -1,30 +1,34 @@
 <script setup lang="ts">
-import { onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { debounce, fetchPosts } from "./utilities";
 import RedditPost from "@/components/RedditPost.vue";
 import SearchBar from "@/components/SearchBar.vue";
 import TimelySelector from "./components/TimelySelector.vue";
+import { useIntersectionObserver } from "@vueuse/core";
 
 const query = ref("");
 const timelyQuery = ref("day");
 const searchResults = ref<any[]>([]);
+const postRefs = ref([]);
+const lastPost = computed(() => postRefs.value[postRefs.value.length - 1]);
 
-async function handleScroll(event: Event) {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        const currentSearchResults = searchResults.value;
+const { stop } = useIntersectionObserver(
+    lastPost,
+    ([{ isIntersecting }]) => isIntersecting && getMorePosts(),
+    { threshold: 0.5 }
+);
 
-        const morePosts = await fetchPosts(
-            query.value,
-            timelyQuery.value,
-            currentSearchResults[currentSearchResults.length - 1]?.name
-        );
+async function getMorePosts() {
+    const currentSearchResults = searchResults.value;
 
-        searchResults.value = [...searchResults.value, ...morePosts];
-    }
+    const morePosts = await fetchPosts(
+        query.value,
+        timelyQuery.value,
+        currentSearchResults[currentSearchResults.length - 1]?.name
+    );
+
+    searchResults.value = [...searchResults.value, ...morePosts];
 }
-
-document.addEventListener("scroll", debounce(1000, handleScroll));
-onBeforeUnmount(() => document.removeEventListener("scroll", handleScroll));
 
 watch(
     [query, timelyQuery],
@@ -50,6 +54,7 @@ watch(
         <TransitionGroup tag="div" name="post" class="post-container">
             <RedditPost
                 v-for="(result, index) in searchResults"
+                ref="postRefs"
                 :key="result?.id"
                 :data-index="index"
                 :data="result"
