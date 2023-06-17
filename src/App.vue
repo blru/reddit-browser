@@ -9,7 +9,7 @@ import { useIntersectionObserver, useUrlSearchParams } from "@vueuse/core";
 const params = useUrlSearchParams("history");
 
 const query = ref(params.q?.toString() ?? "");
-const timelyQuery = ref("day");
+const timelyQuery = ref(params.t?.toString() ?? "day");
 const searchResults = ref<any[]>([]);
 const postRefs = ref([]);
 const lastPost = computed(() => postRefs.value[postRefs.value.length - 1]);
@@ -40,6 +40,9 @@ watch(
         // handle u/
         if (query.value.startsWith("u/"))
             query.value = "user" + query.value.slice(1);
+
+        params.q = query.value;
+        params.t = timelyQuery.value;
 
         searchResults.value = await fetchPosts(query.value, timelyQuery.value);
     }),
